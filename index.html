@@ -2,7 +2,8 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14171a">
 <title>คลังเครื่องมือช่าง — ระบบจัดการสต็อก</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -45,7 +46,10 @@ html, body {
   color: var(--steel-100);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
+
+button, .tab, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 
 body {
   background-image:
@@ -297,7 +301,10 @@ input:focus, select:focus, textarea:focus {
   padding: 12px 24px 0;
   overflow-x: auto;
   background: var(--steel-950);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
+.tabs::-webkit-scrollbar { display: none; }
 .tab {
   background: var(--steel-850);
   color: var(--steel-400);
@@ -554,6 +561,8 @@ input:focus, select:focus, textarea:focus {
 .print-area { display: none; }
 
 @media print {
+  @page { margin: 14mm 12mm; }
+
   body * { visibility: hidden; }
   .print-area, .print-area * { visibility: visible; }
   .print-area {
@@ -562,50 +571,258 @@ input:focus, select:focus, textarea:focus {
     top: 0; left: 0;
     width: 100%;
     background: #fff;
-    color: #111;
-    padding: 24px;
+    color: #1a1a1a;
     font-family: 'Sarabun', sans-serif;
   }
+
+  /* -- Letterhead -- */
   .print-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
-    border-bottom: 3px solid #111;
-    padding-bottom: 12px;
-    margin-bottom: 6px;
+    align-items: flex-start;
+    gap: 20px;
+    padding-bottom: 14px;
+    margin-bottom: 0;
   }
-  .print-header h1 { font-size: 1.4rem; }
-  .print-meta { font-size: 0.8rem; color: #444; margin-bottom: 18px; }
+  .print-brand { display: flex; align-items: center; gap: 12px; }
+  .print-brand-mark {
+    font-size: 1.8rem;
+    color: #c1502e;
+    line-height: 1;
+  }
+  .print-header h1 {
+    font-family: 'Oswald', 'Sarabun', sans-serif;
+    font-size: 1.35rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: #14171a;
+  }
+  .print-brand-sub { font-size: 0.78rem; color: #666; margin-top: 2px; }
+  .print-doc-info {
+    text-align: right;
+    font-size: 0.78rem;
+    color: #444;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px 12px;
+    min-width: 200px;
+    line-height: 1.7;
+  }
+  .print-doc-info b { color: #14171a; }
+  .print-accent-bar {
+    height: 4px;
+    background: linear-gradient(90deg, #c1502e, #f5b700);
+    margin-bottom: 16px;
+  }
+
+  /* -- Summary stat cards -- */
+  .print-summary {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .print-stat {
+    flex: 1;
+    border: 1px solid #ddd;
+    border-top: 3px solid #f5b700;
+    border-radius: 4px;
+    padding: 10px 14px;
+    background: #fafafa;
+  }
+  .print-stat-label { font-size: 0.72rem; color: #666; margin-bottom: 3px; }
+  .print-stat-value { font-family: 'Oswald', sans-serif; font-size: 1.3rem; font-weight: 600; color: #14171a; }
+
+  /* -- Section headings -- */
   .print-section-title {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
     font-size: 1rem;
     font-weight: 700;
-    margin: 18px 0 8px;
-    padding-bottom: 4px;
-    border-bottom: 1px solid #999;
+    color: #14171a;
+    margin: 22px 0 8px;
+    padding-left: 10px;
+    border-left: 4px solid #c1502e;
+    page-break-after: avoid;
   }
-  .print-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
-  .print-table th, .print-table td {
-    border: 1px solid #ccc;
-    padding: 6px 10px;
+  .print-section-count { font-size: 0.75rem; font-weight: 400; color: #777; }
+
+  /* -- Table -- */
+  .print-table { width: 100%; border-collapse: collapse; margin-bottom: 6px; }
+  .print-table thead { display: table-header-group; }
+  .print-table tr { page-break-inside: avoid; }
+  .print-table th {
+    background: #14171a;
+    color: #fff;
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-weight: 600;
+    padding: 8px 10px;
     text-align: left;
-    font-size: 0.82rem;
   }
-  .print-table th { background: #eee; }
-  .print-table td.qty-col, .print-table th.qty-col { text-align: center; width: 80px; }
-  .print-footer { margin-top: 24px; font-size: 0.72rem; color: #666; }
+  .print-table td {
+    border-bottom: 1px solid #e5e5e5;
+    padding: 7px 10px;
+    font-size: 0.83rem;
+  }
+  .print-table tbody tr:nth-child(even) td { background: #f7f7f7; }
+  .print-table td.qty-col, .print-table th.qty-col { text-align: center; width: 90px; }
+  .print-table td.qty-col { font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+  .print-table tr.zero-row td { background: #fdecea !important; }
+  .print-table tr.zero-row td.qty-col { color: #b3301a; }
+  .print-empty-note { font-size: 0.82rem; color: #777; margin-bottom: 12px; padding-left: 10px; }
+
+  /* -- Footer + sign-off -- */
+  .print-footer {
+    margin-top: 28px;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+    font-size: 0.7rem;
+    color: #888;
+  }
+  .print-signoff {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    margin-top: 40px;
+    page-break-inside: avoid;
+  }
+  .print-signoff-block { flex: 1; text-align: center; font-size: 0.8rem; color: #333; }
+  .print-signoff-line {
+    border-bottom: 1px solid #999;
+    height: 40px;
+    margin-bottom: 6px;
+  }
+  .print-signoff-date { font-size: 0.72rem; color: #888; margin-top: 4px; }
 }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 640px) {
-  .topbar { padding: 12px 16px; }
-  .topbar-right span { display: none; }
-  .btn .icon { width: 18px; height: 18px; }
-  .btn { padding: 10px; }
-  .btn-primary#saveChangesBtn span, .btn-ghost#discardBtn span { display: inline; }
-  .main { padding: 16px; }
-  .tabs { padding: 10px 16px 0; }
-  .item-grid { grid-template-columns: 1fr; }
+  /* -- Tap targets: everything gets a real 44px touch area -- */
+  .btn { min-height: 44px; padding: 10px 14px; font-size: 0.85rem; }
+  .btn-icon-only { min-width: 44px; padding: 10px; }
+  .btn .icon { width: 17px; height: 17px; }
+  .btn-sm { min-height: 40px; }
+
+  /* -- Topbar: title stays put, actions become a scrollable chip row -- */
+  .topbar {
+    padding: 10px 14px;
+    padding-top: max(10px, env(safe-area-inset-top));
+    gap: 8px;
+  }
+  .topbar-left { gap: 10px; min-width: 0; }
+  .topbar-title { font-size: 1rem; }
+  .topbar-sub {
+    font-size: 0.72rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 46vw;
+  }
+  .topbar-right {
+    width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    justify-content: flex-start;
+    padding-bottom: 2px;
+  }
+  .topbar-right::-webkit-scrollbar { display: none; }
+  .topbar-right .btn { flex-shrink: 0; }
+  /* Secondary actions (print / users) collapse to icon-only; edit-mode label stays visible */
+  #printBtn span, #usersBtn span { display: none; }
+
+  /* -- Save bar: stack, full-width action buttons, no more magic-number sticky offset -- */
+  .save-bar {
+    position: static;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px 14px;
+    gap: 10px;
+    text-align: center;
+  }
+  .save-bar-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .save-bar-actions .btn { width: 100%; }
+
+  /* -- Tabs: bigger, easier-to-hit pills -- */
+  .tabs { gap: 6px; padding: 10px 14px 0; }
+  .tab {
+    padding: 12px 16px;
+    font-size: 0.8rem;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  /* -- Main content -- */
+  .main { padding: 14px; }
+  .toolbar { gap: 10px; }
+  .search-wrap { min-width: 0; flex-basis: 100%; }
+  .search-wrap input { min-height: 44px; }
+  .toolbar-stats { width: 100%; }
+
+  /* -- Item cards -- */
+  .item-grid { grid-template-columns: 1fr; gap: 10px; }
+  .item-card { padding: 14px; }
+  .qty-btn { width: 42px; height: 42px; font-size: 1.2rem; }
+  .qty-value { font-size: 1.1rem; min-width: 44px; }
+  .item-edit-icon { padding: 8px; }
+
   .add-user-row { grid-template-columns: 1fr; }
+  .add-user-row .btn { min-height: 44px; }
+
+  /* -- Modals become bottom sheets: easier to reach with a thumb -- */
+  .modal-overlay { padding: 0; align-items: flex-end; }
+  .modal {
+    max-width: 100%;
+    border-radius: 16px 16px 0 0;
+    padding: 22px 18px calc(20px + env(safe-area-inset-bottom));
+    max-height: 88vh;
+    overflow-y: auto;
+  }
+  .modal-actions { flex-direction: column-reverse; align-items: stretch; gap: 8px; }
+  .modal-actions-right {
+    display: flex;
+    flex-direction: column-reverse;
+    width: 100%;
+    margin-left: 0;
+    gap: 8px;
+  }
+  .modal-actions .btn, .modal-actions-right .btn { width: 100%; }
+
+  /* -- Floating add-item button (only rendered when JS un-hides it, i.e. in edit mode) -- */
+  #addItemBtn:not(.hidden) {
+    position: fixed;
+    right: 18px;
+    bottom: calc(18px + env(safe-area-inset-bottom));
+    width: 56px;
+    height: 56px;
+    min-height: 0;
+    border-radius: 50%;
+    padding: 0;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.55);
+    z-index: 30;
+  }
+  #addItemBtn span { display: none; }
+  #addItemBtn .icon { width: 22px; height: 22px; }
+
+  /* -- Toast: full-width-ish so long messages don't clip on narrow screens -- */
+  .toast {
+    left: 14px;
+    right: 14px;
+    transform: none;
+    bottom: calc(18px + env(safe-area-inset-bottom));
+    text-align: center;
+  }
+
+  .login-panel, .config-panel { padding: 28px 22px; }
+}
+
+@media (max-width: 380px) {
+  .topbar-title { font-size: 0.92rem; }
+  .topbar-sub { max-width: 38vw; }
 }
 
 </style>
@@ -682,7 +899,7 @@ input:focus, select:focus, textarea:focus {
         <svg class="icon" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6v-8z"/></svg>
         <span>พิมพ์ / PDF</span>
       </button>
-      <button class="btn btn-ghost" id="usersBtn">
+      <button class="btn btn-ghost" id="usersBtn" title="จัดการผู้ใช้">
         <svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
         <span>ผู้ใช้</span>
       </button>
@@ -1514,43 +1731,77 @@ function buildPrintDocument(scope) {
 
   const totalItems = sections.reduce((sum, s) => sum + (state.items[s.key] || []).length, 0);
   const totalQty = sections.reduce((sum, s) => sum + (state.items[s.key] || []).reduce((a, i) => a + (i.qty || 0), 0), 0);
+  const zeroCount = sections.reduce((sum, s) => sum + (state.items[s.key] || []).filter(i => (i.qty ?? 0) === 0).length, 0);
 
   let html = `
     <div class="print-header">
-      <div>
-        <h1>รายงานสต็อกเครื่องมือช่าง</h1>
+      <div class="print-brand">
+        <div class="print-brand-mark">⚒</div>
+        <div>
+          <h1>รายงานสต็อกเครื่องมือช่าง</h1>
+          <div class="print-brand-sub">ระบบจัดการสต็อกเครื่องมือ — คลังเครื่องมือช่าง</div>
+        </div>
       </div>
-      <div style="text-align:right;">
-        <div>ผู้พิมพ์: ${escapeHtml(state.currentUser?.email || '-')}</div>
+      <div class="print-doc-info">
+        <div><b>ผู้พิมพ์:</b> ${escapeHtml(state.currentUser?.email || '-')}</div>
+        <div><b>วันที่:</b> ${formatThaiDate(now)}</div>
       </div>
     </div>
-    <div class="print-meta">
-      วันที่พิมพ์เอกสาร: ${formatThaiDate(now)} &nbsp;|&nbsp; จำนวนรายการทั้งหมด: ${totalItems} รายการ &nbsp;|&nbsp; จำนวนเครื่องมือรวม: ${totalQty} ชิ้น
+    <div class="print-accent-bar"></div>
+
+    <div class="print-summary">
+      <div class="print-stat">
+        <div class="print-stat-label">จำนวนรายการทั้งหมด</div>
+        <div class="print-stat-value">${totalItems} รายการ</div>
+      </div>
+      <div class="print-stat">
+        <div class="print-stat-label">จำนวนเครื่องมือรวม</div>
+        <div class="print-stat-value">${totalQty} ชิ้น</div>
+      </div>
+      <div class="print-stat">
+        <div class="print-stat-label">รายการที่หมดสต็อก</div>
+        <div class="print-stat-value">${zeroCount} รายการ</div>
+      </div>
     </div>
   `;
 
   sections.forEach(sec => {
     const items = state.items[sec.key] || [];
-    html += `<div class="print-section-title">${escapeHtml(sec.label)} (${items.length} รายการ)</div>`;
+    html += `<div class="print-section-title">${escapeHtml(sec.label)} <span class="print-section-count">(${items.length} รายการ)</span></div>`;
     if (!items.length) {
-      html += `<p style="font-size:0.82rem;color:#666;margin-bottom:12px;">— ไม่มีข้อมูล —</p>`;
+      html += `<p class="print-empty-note">— ไม่มีข้อมูล —</p>`;
     } else {
       html += `<table class="print-table"><thead><tr>
         <th style="width:36px;">ลำดับ</th><th>ชื่อเครื่องมือ</th><th>หมายเหตุ</th><th class="qty-col">จำนวน</th>
       </tr></thead><tbody>`;
       items.forEach((it, idx) => {
-        html += `<tr>
+        const qty = it.qty ?? 0;
+        html += `<tr${qty === 0 ? ' class="zero-row"' : ''}>
           <td>${idx + 1}</td>
           <td>${escapeHtml(it.name)}</td>
           <td>${escapeHtml(it.note || '-')}</td>
-          <td class="qty-col">${it.qty ?? 0}</td>
+          <td class="qty-col">${qty}</td>
         </tr>`;
       });
       html += `</tbody></table>`;
     }
   });
 
-  html += `<div class="print-footer">เอกสารนี้สร้างโดยระบบจัดการสต็อกเครื่องมือช่าง — พิมพ์เมื่อ ${formatThaiDate(now)}</div>`;
+  html += `
+    <div class="print-signoff">
+      <div class="print-signoff-block">
+        <div class="print-signoff-line"></div>
+        ผู้ตรวจนับสต็อก
+        <div class="print-signoff-date">วันที่ ____ / ____ / ____</div>
+      </div>
+      <div class="print-signoff-block">
+        <div class="print-signoff-line"></div>
+        ผู้อนุมัติ
+        <div class="print-signoff-date">วันที่ ____ / ____ / ____</div>
+      </div>
+    </div>
+    <div class="print-footer">เอกสารนี้สร้างโดยระบบจัดการสต็อกเครื่องมือช่าง — พิมพ์เมื่อ ${formatThaiDate(now)}</div>
+  `;
 
   el.printArea.innerHTML = html;
 }
